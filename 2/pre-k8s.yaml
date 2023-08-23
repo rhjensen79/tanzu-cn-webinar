@@ -1,0 +1,35 @@
+apiVersion: run.tanzu.vmware.com/v1alpha2
+kind: TanzuKubernetesCluster
+metadata:
+  name: pre-k8s
+spec:
+  topology:
+    controlPlane:
+      replicas: 1
+      vmClass: best-effort-medium
+      storageClass: vc01cl01-t0compute
+      volumes:
+        - name: etcd
+          mountPath: /var/lib/etcd
+          capacity:
+            storage: 5Gi
+      tkr:
+        reference:
+          name: v1.23.8---vmware.3-tkg.1
+    nodePools:
+      - name: worker-nodepool-a1
+        replicas: 3
+        vmClass: best-effort-medium
+        storageClass: vc01cl01-t0compute
+        volumes:
+          - name: containerd
+            mountPath: /var/lib/containerd
+            capacity:
+              storage: 10Gi
+        tkr:
+          reference:
+            name: v1.23.8---vmware.3-tkg.1
+
+  settings:
+    storage:
+      defaultClass: vc01cl01-t0compute
